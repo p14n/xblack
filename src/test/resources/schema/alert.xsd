@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/alert" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/alert" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:element name="DeliveryStatus">
+        <xs:annotation>
+            <xs:documentation>A - unalerted, B - awaiting delivery, C - sent and inactive</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="c:string1">
+                <xs:enumeration value="A"/>
+                <xs:enumeration value="B"/>
+                <xs:enumeration value="C"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="Trigger">
+        <xs:annotation>
+            <xs:documentation>U - the alert was triggered by the up price
+D - the alert was triggered by the down price</xs:documentation>
+        </xs:annotation>
+        <xs:simpleType>
+            <xs:restriction base="c:string1">
+                <xs:enumeration value="U"/>
+                <xs:enumeration value="D"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="Type">
+        <xs:simpleType>
+            <xs:annotation>
+                <xs:documentation>A - Amount Alert, the up and down prices are change amounts that will trigger the alert if the price rises or falls by this amount,</xs:documentation>
+                <xs:documentation>L - Limit Alert, the up and down prices are price limits which will trigger the alert,</xs:documentation>
+                <xs:documentation>P - Percentage Alert, the up and down prices are percentages that will trigger the alert if the price rises or falls by these percentages</xs:documentation>
+            </xs:annotation>
+            <xs:restriction base="c:string1">
+                <xs:enumeration value="L"/>
+                <xs:enumeration value="A"/>
+                <xs:enumeration value="P"/>
+            </xs:restriction>
+        </xs:simpleType>
+    </xs:element>
+    <xs:element name="Alert">
+        <xs:annotation>
+            <xs:documentation>A price alert in Figaro</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="c:InstrumentHeading"/>
+                <xs:element name="alertPrice" type="c:Price">
+                    <xs:annotation>
+                        <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element minOccurs="0" name="originalPrice" type="c:Price"/>
+                <xs:element name="livePrice" type="c:Price" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="c:DeliveryType"/>
+                <xs:element ref="DeliveryStatus">
+                    <xs:annotation>
+                        <xs:documentation>A - unalerted, B - awaiting delivery, C - sent and inactive</xs:documentation>
+                        <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="Trigger">
+                    <xs:annotation>
+                        <xs:documentation>U - the alert was triggered by the up price
+D - the alert was triggered by the down price
+</xs:documentation>
+                        <xs:documentation>Set when creating alert in JETS, but doesn't make sense to set.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="Type">
+                    <xs:annotation>
+                        <xs:documentation>A - Amount Alert, the up and down prices are change amounts that will trigger the alert if the price rises or falls by this amount,
+</xs:documentation>
+                        <xs:documentation>L - Limit Alert, the up and down prices are price limits which will trigger the alert,
+</xs:documentation>
+                        <xs:documentation>P - Percentage Alert, the up and down prices are percentages that will trigger the alert if the price rises or falls by these percentages</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Alert Id, set to 0 when creating alerts</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="upPrice" type="c:price" use="required"/>
+            <xs:attribute name="downPrice" type="c:price" use="required"/>
+            <xs:attribute ref="c:currency"/>
+            <xs:attribute form="unqualified" name="dateCreated" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts. </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="dateChanged" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts. </xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute form="unqualified" name="dateTriggered" type="xs:dateTime">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="closeMidPrice" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="priceDifference" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="priceDifferencePercentage" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Don't set when creating price alerts.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="activated" type="xs:boolean"/>
+            <xs:attribute name="checkUniqueAlert" type="xs:boolean" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Alerts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="Alert"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

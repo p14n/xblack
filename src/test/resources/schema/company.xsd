@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/company"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/company" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+
+    <xs:element name="Company">
+        <xs:annotation>
+            <xs:documentation>Representation of a company in Figaro</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="c:Links" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="uecode" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>The unique identifier of the company in
+                        Figaro</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Company name</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="registrationNumber" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>The registered company number</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="country" type="c:iso3country">
+                <xs:annotation>
+                    <xs:documentation>Country of registration</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="CompanyRelationship">
+        <xs:sequence>
+            <xs:element ref="Company"/>
+        </xs:sequence>
+        <xs:attribute ref="c:roleId" use="optional">
+            <xs:annotation>
+                <xs:documentation>The role of an individual in the relationship with the
+                    company</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="CompanyRelationships">
+        <xs:sequence>
+            <xs:element name="CompanyRelationship" type="CompanyRelationship" maxOccurs="unbounded"
+                minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

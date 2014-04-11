@@ -1,0 +1,104 @@
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/instrument"
+    xmlns:c="http://schemas.jhc.co.uk/domain/common" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/instrument"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common"
+        schemaLocation="common.xsd" />
+
+
+    
+    <xs:element name="InstrumentClassification">
+        <xs:complexType>
+            <xs:attribute name="sector" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Based on C2 (Country of quotation) and C4 (Industrial classification)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="nationalityDeclaration" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>R32 (nationality declaration required)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="industrialClassificationCode" type="c:string7">
+                <xs:annotation>
+                    <xs:documentation>C4 (Industrial classification)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="marketSegment" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>AS13 (Market segment code)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="InstrumentApplicability">
+        <xs:complexType>
+            <xs:attribute name="trading" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Is the instrument available to trade?</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="isaTrading" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Is the instrument available to trade in an ISA wrapper?</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="sippTrading" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Is the instrument available to trade in a SIPP wrapper?</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>            
+            <xs:attribute name="rspTrading" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Is the instrument available to trade with a Retail Service Provider?</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="InstrumentProperties">
+        <xs:complexType>
+            <xs:attribute name="countryOfIncorporation" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>AS1 (Country of incorporation)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="issuerName" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>R1 (Issuer name)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="securityDescription" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>R2 (Security description)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="numberOfTrades" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Recent trades</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="Instrument">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="c:InstrumentHeading" minOccurs="0"></xs:element>
+                <xs:element ref="InstrumentClassification" minOccurs="0"></xs:element>
+                <xs:element ref="InstrumentApplicability" minOccurs="0"></xs:element>
+                <xs:element ref="InstrumentProperties" minOccurs="0"></xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="Instruments">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Instrument" minOccurs="1" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

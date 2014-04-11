@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/individual"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/individual" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common"
+    xmlns:a="http://schemas.jhc.co.uk/domain/account"
+    xmlns:cmp="http://schemas.jhc.co.uk/domain/company">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/account" schemaLocation="account.xsd"/>
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/company" schemaLocation="company.xsd"/>
+
+    <xs:element name="Individual">
+
+        <xs:annotation>
+            <xs:documentation>Representation of an individual person in Figaro</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType>
+
+            <xs:sequence>
+                <xs:element ref="c:EmailAddresses" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>A container to hold many email
+                            addresses</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Title" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>The title of this user (eg Mr,Ms))</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="MiddleNames" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Middle names or initials</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Line" type="xs:string" maxOccurs="5"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="Dob" type="xs:date" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Date of birth</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Dod" type="xs:date" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Date of death</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Retired" type="xs:date" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Date of retirement</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Residence" type="c:Country" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Country of residence</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Nationality" type="c:Country" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Country of nationality</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Occupation" type="xs:string" minOccurs="0"/>
+                <xs:element name="Language" type="xs:string" minOccurs="0"/>
+                <xs:element name="MaritalStatus" minOccurs="0">
+                    <xs:simpleType>
+                        <xs:restriction base="xs:string">
+                            <xs:enumeration value="single"/>
+                            <xs:enumeration value="married"/>
+                            <xs:enumeration value="divorced"/>
+                        </xs:restriction>
+                    </xs:simpleType>
+                </xs:element>
+                <xs:element ref="c:PhoneNumbers" minOccurs="0"/>
+                <xs:element ref="c:Addresses" minOccurs="0"/>
+                <xs:element minOccurs="0" name="relatedAccounts" type="a:AccountRelationships"/>
+                <xs:element minOccurs="0" name="relatedCompanies" type="cmp:CompanyRelationships"/>
+                <xs:element ref="c:Links" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="uecode" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>The unique identifier of the individual in
+                        Figaro</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="forename" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>First name</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="surname" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Last name</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="username" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Username, if present</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+
+    </xs:element>
+    
+    <xs:element name="Individuals">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Individual" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="IndividualRelationship">
+        <xs:sequence>
+            <xs:element ref="Individual"/>
+        </xs:sequence>
+        <xs:attribute ref="c:roleId" use="optional">
+            <xs:annotation>
+                <xs:documentation>The role of this individual in the relationship</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="IndividualRelationships">
+        <xs:sequence>
+            <xs:element name="IndividualRelationship" type="IndividualRelationship"
+                maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+</xs:schema>

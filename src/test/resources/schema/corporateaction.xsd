@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/corporateaction"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:c="http://schemas.jhc.co.uk/domain/common"
+    xmlns:v="http://schemas.jhc.co.uk/domain/valuation"
+    targetNamespace="http://schemas.jhc.co.uk/domain/corporateaction" elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/valuation" schemaLocation="valuation.xsd"/>
+    <xs:element name="CorporateActions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CorporateAction"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateAction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CorporateActionEvents"/>
+                <xs:element ref="v:Holding"/>
+            </xs:sequence>
+            <xs:attribute name="startDate" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Start date of corporate action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>TO=Takeover
+RI=Rights issue
+DV=Dividend</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="description" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Description of the corporate action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="currency" type="c:isoCcy">
+                <xs:annotation>
+                    <xs:documentation>The currency associated with the corporate action (usually the market currency of the instrument)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="urn" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Corporate Action Unique Reference Number</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="status" type="Status"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionActivity">
+        <xs:complexType>
+            <xs:attribute name="oldUnits" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Client's current holding in the instrument associated with the corporate action header</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="actionType" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Corporate action Figaro Action type Examples:IS=Issue stock, RS=Remove stock,IC=Issue cash,RC=Remove stock</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="newUnits" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Client's current holding in the instrument associated with the corporate action header</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="price" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Price associated with the corporate action Figaro Action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="resultCurrency" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Currency of if the type is issue/remove cash (type="IC" or "RC")</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="unknownOutturns" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Set to true if the client has unknown outturns ( the amount of cash or stock to be given to a customer is unknown )</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="result" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Client's current holding in the instrument associated with the corporate action header</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="actionDescription" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Description associated with this corporate action Figaro action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionActivities">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CorporateActionActivity"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionEvent">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CAEventID"/>
+                <xs:element ref="CorporateActionEventDetails"/>
+            </xs:sequence>
+            <xs:attribute name="optional" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Indication that the Corporate Action event is optional. Otherwise it will be a mandatory event</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="eventType" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Corporate action event type eg. DV=Dividend, IO=Issue ordinary stock, IC=Issue cash, IN=Issue nil paid</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="description" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Description associated with this corporate action event type</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="responseDue" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Date by which all responses are due</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="bookCloseDate" type="xs:date"/>
+            <xs:attribute name="cashDueCurrency" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Currency of the cash due</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cashDue" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Cash due to/from the client</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionEvents">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CorporateActionEvent"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CAEventID">
+        <xs:complexType>
+            <xs:attribute name="urn" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Corporate Action Unique Reference Number</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="sequence" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>Figaro sequence number for corporate action event</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="Status">
+        <xs:annotation>
+            <xs:documentation>0-No active event, 1-No response required, 2-Response received, 3-Response required, 4-Closed</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="0"/>
+            <xs:pattern value=""/>
+            <xs:enumeration value="1"/>
+            <xs:enumeration value="2"/>
+            <xs:enumeration value="3"/>
+            <xs:enumeration value=""/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="DividentDetails">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="UnisTrustDetails"/>
+            </xs:sequence>
+            <xs:attribute name="dividentType" type="xs:string"/>
+            <xs:attribute name="posted" type="xs:boolean"/>
+            <xs:attribute name="payRate" type="xs:decimal"/>
+            <xs:attribute name="paymentMarket" type="xs:decimal"/>
+            <xs:attribute name="taxMarket" type="xs:decimal"/>
+            <xs:attribute name="agentChargesMarket" type="xs:decimal"/>
+            <xs:attribute name="agentChargesClient" type="xs:decimal"/>
+            <xs:attribute name="marketClientRate" type="xs:decimal"/>
+            <xs:attribute name="paymentClient" type="xs:decimal"/>
+            <xs:attribute name="taxClient" type="xs:decimal"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UnisTrustDetails">
+        <xs:complexType>
+            <xs:attribute name="groupOnePayRate" type="xs:decimal"/>
+            <xs:attribute name="groupOnePayment" type="xs:decimal"/>
+            <xs:attribute name="groupOneTax" type="xs:decimal"/>
+            <xs:attribute name="groupTwoPayRate" type="xs:decimal"/>
+            <xs:attribute name="groupTwoEqualisationRate" type="xs:decimal"/>
+            <xs:attribute name="groupTwoPayment" type="xs:decimal"/>
+            <xs:attribute name="groupTwoTax" type="xs:decimal"/>
+            <xs:attribute name="groupTwoEqualisation" type="xs:decimal"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="UnitTrustGroup">
+        <xs:complexType>
+            <xs:attribute name="payRate" type="xs:decimal"/>
+            <xs:attribute name="payment" type="xs:decimal"/>
+            <xs:attribute name="tax" type="xs:decimal"/>
+            <xs:attribute name="groupType" type="GroupType"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:simpleType name="GroupType">
+        <xs:annotation>
+            <xs:documentation>1-group one, 2-group two</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string"/>
+    </xs:simpleType>
+    <xs:element name="EventNotes">
+        <xs:complexType>
+            <xs:attribute name="notes" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionOptions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="CorporateActionOption"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionOption">
+        <xs:complexType>
+            <xs:attribute name="allocation" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Current allocation for this corporate action option</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="pricePerShare" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Where appropriate this is the price per share of the corporate action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cashToPricePerShareRate" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>The exchange rate from the cash due currency to the price per share currency</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="priceCurrency" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Currency of the price per share</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cashDueCurrency" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Currency of the cash due</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="cashDue" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Cash due to/from the client</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="description" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The description associated with this option eg.Take up rights, Lapse rights</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="optionNumber" type="xs:long">
+                <xs:annotation>
+                    <xs:documentation>Key to identify the option for a corporate action. Option 1 is the default action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="depot" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The depot of the holding which made this client eligable for the corporate action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="claim" type="xs:boolean">
+                <xs:annotation>
+                    <xs:documentation>Indicates if this corporate action event is a claim</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="crestAccount" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The crest account associate with this corporate action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="crestMember" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Crest member associated with this action</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="CorporateActionEventDetails">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="DividentDetails"/>
+                <xs:element ref="CorporateActionOptions"/>
+                <xs:element ref="EventNotes"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

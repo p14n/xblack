@@ -1,0 +1,73 @@
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/internal"
+	xmlns:c="http://schemas.jhc.co.uk/domain/common" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	targetNamespace="http://schemas.jhc.co.uk/domain/internal"
+	elementFormDefault="qualified" attributeFormDefault="unqualified">
+
+	<xs:import namespace="http://schemas.jhc.co.uk/domain/common"
+		schemaLocation="common.xsd" />
+
+	<xs:complexType name="Container">
+		<xs:annotation>
+			<xs:documentation>Contains any element</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="objectType" type="xs:string" use="required">
+			<xs:annotation>
+				<xs:documentation>
+					The type of the contained object
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+		<xs:attribute name="containedObject" type="xs:base64Binary"
+			use="required">
+			<xs:annotation>
+				<xs:documentation>
+					The contained object
+				</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+
+	<xs:element name="ApiMessage">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="c:Parameters" minOccurs="0" maxOccurs="1" />
+				<xs:element name="Body" type="Container" minOccurs="0"
+					maxOccurs="1" />
+			</xs:sequence>
+			<xs:attribute name="method" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The method (corresponding to HTTP methods e.g.
+						GET) to use
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="path" type="xs:string" use="optional">
+				<xs:annotation>
+					<xs:documentation>The path to target - corresponds to actors
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="requestId" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>Identifies the message for the lifetime of this
+						request through the system
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="person" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>The uecode of the person instigating this request
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+			<xs:attribute name="status" type="xs:int" use="optional">
+				<xs:annotation>
+					<xs:documentation>The status (corresponding to HTTP status codes
+						e.g. 404 Not found) to use
+					</xs:documentation>
+				</xs:annotation>
+			</xs:attribute>
+		</xs:complexType>
+	</xs:element>
+
+</xs:schema>

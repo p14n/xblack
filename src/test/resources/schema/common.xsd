@@ -1,0 +1,473 @@
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/common"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/common" elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+    
+    <xs:simpleType name="string3">
+        <xs:annotation>
+            <xs:documentation>A three character string</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="3"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="string2">
+        <xs:annotation>
+            <xs:documentation>A two character string</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="2"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="iban">
+        <xs:annotation>
+            <xs:documentation>International banking account number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="28"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:element name="Address">
+        <xs:annotation>
+            <xs:documentation>A physical postal address</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="AddressLines" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Any lines of the address that are not city, postal code or country.  For example region, street name and building name/number.</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="Line" type="xs:string" maxOccurs="5"/>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element name="City" type="xs:string" minOccurs="0"/>
+                <xs:element name="PostCode" type="xs:string" minOccurs="0"/>
+                <xs:element name="Country" type="Country" minOccurs="0"/>
+                <xs:element ref="Validity" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="isPrimary" type="xs:boolean" use="optional"/>
+            <xs:attribute name="yearsAtAddress" type="xs:int" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="PhoneNumber">
+        <xs:annotation>
+            <xs:documentation>A phone number</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Validity" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="type" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>A text description of the type of phone number (eg home)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="country" type="iso3country" use="required"/>
+            <xs:attribute name="number" type="xs:string" use="required"/>
+            <xs:attribute name="extension" type="xs:string" use="optional"/>
+            <xs:attribute name="isPrimary" type="xs:boolean" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="iso3country">
+        <xs:annotation>
+            <xs:documentation>ISO3 country code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="string3"/>
+    </xs:simpleType>
+
+    <xs:simpleType name="iso2country">
+        <xs:restriction base="string2"/>
+    </xs:simpleType>
+    <xs:complexType name="Country">
+        <xs:annotation>
+            <xs:documentation>A country.  ISO3 code is the unique identifier.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Description" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="iso3" type="iso3country" use="optional"/>
+        <xs:attribute name="iso2" type="string2" use="optional"/>
+    </xs:complexType>
+
+    <xs:complexType name="CashValue">
+        <xs:annotation>
+            <xs:documentation>A monetary value</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="currency" type="isoCcy" use="required"/>
+        <xs:attribute name="amount" type="xs:decimal" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="DateRange">
+        <xs:annotation>
+            <xs:documentation>A date range</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="from" type="xs:dateTime" use="required"/>
+        <xs:attribute name="to" type="xs:dateTime" use="optional"/>
+    </xs:complexType>
+
+    <xs:element name="EmailAddress">
+        <xs:annotation>
+            <xs:documentation>An email address - both the actual address and the label are held in this container</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="address" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>The email address</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="label" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Classification of email address (currently 'primary' and secondary' are used)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="EmailAddresses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="EmailAddress" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Addresses">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Address" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="PhoneNumbers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="PhoneNumber" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Links">
+        <xs:annotation>
+            <xs:documentation>Further actions available on this resource</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Link" type="Link" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Parameters">
+        <xs:annotation>
+            <xs:documentation>A sequence of key/value pairs. For JHC use only.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Parameter" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="Parameter">
+        <xs:complexType>
+            <xs:attribute name="key" type="xs:token" use="required"/>
+            <xs:attribute name="value" type="xs:string" use="required"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:complexType name="Link" mixed="true">
+        <xs:annotation>
+            <xs:documentation>
+                The link shows further actions available on this resource
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element ref="Parameters" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="href" use="optional" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>A url that can be accessed to perform or query the action</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="rel" type="xs:string" use="required">
+            <xs:annotation>
+                <xs:documentation>A unique identifier that defines this action</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="description" use="optional" type="xs:string">
+            <xs:annotation>
+                <xs:documentation>A free text description of the action</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:element name="Validity" type="DateRange">
+        <xs:annotation>
+            <xs:documentation>The date range for which this entity is valid</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:element name="Product">
+
+        <xs:annotation>
+            <xs:documentation>Financial product, eg ISA</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="Description" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Text description of this product</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="code" type="xs:string" use="required">
+                <xs:annotation>
+                    <xs:documentation>Unique identifier of this product</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Identifier of this product type</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="isoCcy">
+        <xs:annotation>
+            <xs:documentation>ISO currency code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="string3"/>
+    </xs:simpleType>
+
+    <xs:attribute name="serviceLevel" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>The service level of the account/accounts (e.g. advisory, discretionary)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="baseCcy" type="isoCcy">
+        <xs:annotation>
+            <xs:documentation>The base currency of the account/accounts.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="settCcy" type="isoCcy">
+        <xs:annotation>
+            <xs:documentation>The settlement currency of the account/accounts.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="valCcy" type="isoCcy">
+        <xs:annotation>
+            <xs:documentation>The valuation currency of the account/accounts.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:attribute name="currency" type="isoCcy"/>
+    <xs:attribute name="roleId" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>The unique identifier of a role.</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+
+    <xs:element name="Role">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="Description" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Text description of this role</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute ref="roleId" use="optional"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="ValuationFormat">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="Description" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Text description of this format</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Unique identifier of this format</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="InvestmentObjective">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element minOccurs="0" name="Description" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Text description of this objective</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="code" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Unique identifier of this objective</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="InstrumentHeading">
+        <xs:complexType>
+            <xs:attribute ref="sedol"/>
+            <xs:attribute ref="isin"/>
+            <xs:attribute ref="symbol"/>
+            <xs:attribute ref="name"/>
+            <xs:attribute ref="longName"/>
+            <xs:attribute ref="market"/>
+            <xs:attribute ref="securityType"/>
+            <xs:attribute name="country" type="iso2country">
+                <xs:annotation>
+                    <xs:documentation>Country of registration</xs:documentation>
+                </xs:annotation>    
+            </xs:attribute>
+            <xs:attribute name="abbreviation" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Security abbreviation (F9)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:simpleType name="string7">
+        <xs:annotation>
+            <xs:documentation>A 7 character string</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="7"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="string12">
+        <xs:annotation>
+            <xs:documentation>A 12 character string</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="12"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attribute name="isin" type="string12">
+        <xs:annotation>
+            <xs:documentation>ISIN</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="sedol" type="string7">
+        <xs:annotation>
+            <xs:documentation>SEDOL code</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="securityType" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>Security type (for example STOCK)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="symbol" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>AS18 (Local security code) + F3 (Exchange of quotation)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="name" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>A3 (Company name) + A4 (Security description)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="longName" type="xs:string">
+        <xs:annotation>
+            <xs:documentation>R1 (Issuer name) + R2 (Security description)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:attribute name="market" type="string3">
+        <xs:annotation>
+            <xs:documentation>C2 (Country of quotation) + F3 (Exchange of quotation)</xs:documentation>
+        </xs:annotation>
+    </xs:attribute>
+    
+    <xs:simpleType name="price">
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="6"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:attribute name="bid" type="price"/>
+    <xs:attribute name="mid" type="price"/>
+    <xs:attribute name="ask" type="price"/>
+    <xs:complexType name="Price">
+        <xs:attribute ref="bid"/>
+        <xs:attribute ref="mid"/>
+        <xs:attribute ref="ask"/>
+    </xs:complexType>
+    <xs:simpleType name="string1">
+        <xs:annotation>
+            <xs:documentation>One character string
+</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="DeliveryType">
+        <xs:annotation>
+            <xs:documentation>The following attributes can be set to true or false: inBox, email, sms.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="inBox" type="xs:boolean"/>
+            <xs:attribute name="email" type="xs:boolean"/>
+            <xs:attribute name="sms" type="xs:boolean"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:attribute name="accountNumber" type="string7"/>
+    <xs:attribute name="price" type="price"/>
+    <xs:attribute name="qty" type="xs:integer"/>
+    
+    <xs:element name="Error">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Message" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>A brief description of the error</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Info" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Further information about the error, possibly including stack trace.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>        
+            <xs:attribute name="httpCode" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>The http code, if appropriate.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="jhcCode" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>JHC's internal error code, if appropriate.</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="Errors">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Error" minOccurs="1" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    
+</xs:schema>

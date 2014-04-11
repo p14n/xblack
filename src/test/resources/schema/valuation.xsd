@@ -1,0 +1,33 @@
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/valuation"
+    xmlns:c="http://schemas.jhc.co.uk/domain/common" 
+    xmlns:i="http://schemas.jhc.co.uk/domain/instrument" 
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/valuation"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common"
+        schemaLocation="common.xsd" />
+    
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/instrument"
+        schemaLocation="instrument.xsd" />
+    
+    <xs:element name="Holding">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="i:Instrument"></xs:element>
+                <xs:element type="c:CashValue" name="BookCost"></xs:element>
+                <xs:element type="c:CashValue" name="Value"></xs:element>
+            </xs:sequence>
+            <xs:attribute type="xs:decimal" name="quantity"></xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="Holdings">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Holding" minOccurs="1" maxOccurs="unbounded"></xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+</xs:schema>

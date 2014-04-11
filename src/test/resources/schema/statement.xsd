@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/statement"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/statement" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common"
+    xmlns:ca="http://schemas.jhc.co.uk/domain/corporateaction">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/corporateaction"
+        schemaLocation="corporateaction.xsd"/>
+
+    <xs:simpleType name="BoS">
+        <xs:annotation>
+            <xs:documentation>B - buy; S - sell U-unknown</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="c:string1">
+            <xs:enumeration value="B"/>
+            <xs:enumeration value="S"/>
+            <xs:enumeration value="U"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:element name="StatementEntry">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ca:CAEventID"/>
+            </xs:sequence>
+            <xs:attribute name="batchType" type="xs:string"/>
+            <xs:attribute name="contractReference" type="xs:string"/>
+            <xs:attribute ref="c:currency"/>
+            <xs:attribute name="dateEntered" type="xs:date"/>
+            <xs:attribute name="settlementDate" type="xs:date"/>
+            <xs:attribute name="description" type="xs:string"/>
+            <xs:attribute name="runningBalance" type="xs:decimal"/>
+            <xs:attribute name="itemValue" type="xs:decimal"/>
+            <xs:attribute name="credit" type="xs:decimal"/>
+            <xs:attribute name="debit" type="xs:decimal"/>
+            <xs:attribute name="isaProduct" type="c:string3"/>
+            <xs:attribute name="isaComponent" type="c:string1"/>
+            <xs:attribute name="bos" type="BoS"/>
+
+            <xs:attribute name="symbol" type="xs:string"/>
+            <xs:attribute ref="c:market"/>
+            <xs:attribute ref="c:price"/>
+            <xs:attribute name="qty" type="xs:string"/>
+            <xs:attribute name="instrumentName" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Statement">
+        <xs:annotation>
+            <xs:documentation>BETA VERSION. NOT TO BE NOT USED IN PRODUCTION</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="StatementEntry"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

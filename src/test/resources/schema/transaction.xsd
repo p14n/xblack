@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/transaction"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/transaction" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common"
+    xmlns:ca="http://schemas.jhc.co.uk/domain/corporateaction">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/corporateaction"
+        schemaLocation="corporateaction.xsd"/>
+
+
+    <xs:element name="Transaction">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="TransactionType">
+                    <xs:complexType>
+                        <xs:attribute name="transactionCode" type="xs:string">
+                            <xs:annotation>
+                                <xs:documentation>Figaro code to identify transaction type eg. PURCH (Purchase), SALE (Sale), etc</xs:documentation>
+                            </xs:annotation>
+                        </xs:attribute>
+                    </xs:complexType>
+                </xs:element>
+                <xs:element ref="TransactionSourceId"/>
+                <xs:element ref="c:InstrumentHeading"/>
+            </xs:sequence>
+            <xs:attribute name="transactionDate" type="xs:date">
+                <xs:annotation>
+                    <xs:documentation>Transaction date</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="reference" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Transaction reference</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="quantity" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Quantity</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="value" type="xs:decimal">
+                <xs:annotation>
+                    <xs:documentation>Value</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="ContractId">
+        <xs:complexType>
+            <xs:attribute name="broker" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Broker code</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="contractReference" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Contract reference</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="year" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Contract year</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="TransactionSourceId">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="ContractId"/>
+                <xs:element ref="ca:CAEventID"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Transactions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Transaction" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

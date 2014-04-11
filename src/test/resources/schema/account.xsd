@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/account"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/account" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+
+    <xs:element name="Account">
+        <xs:annotation>
+            <xs:documentation>A financial account in Figaro</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+
+            <xs:sequence>
+                <xs:element ref="c:Product"/>
+                <xs:element name="DefaultBankAccounts" type="DefaultBankAccounts" minOccurs="0"/>
+                <xs:element ref="Balances" minOccurs="0"/>
+                <xs:element ref="c:Links" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The numeric identifier of the account</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="name" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The name given to this account</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The type of account (eg client/bank/commission)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute ref="c:serviceLevel"/>
+            <xs:attribute name="dealingStatus" type="xs:int">
+                <xs:annotation>
+                    <xs:documentation>The dealing status of the account. 0=normal, 1=No purchases, 2=No
+                    trades, 3=Deleting</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute ref="c:baseCcy"/>
+            <xs:attribute ref="c:settCcy"/>
+            <xs:attribute ref="c:valCcy"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Accounts">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Account" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="AccountSummary">
+        <xs:annotation>
+            <xs:documentation>A summary of an individuals accounts</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Accounts"/>
+                <xs:element ref="AvailableToWithdraw">
+                    <xs:annotation>
+                        <xs:documentation>Total of cleared funds across all accounts</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element ref="HoldingValuation">
+                    <xs:annotation>
+                        <xs:documentation>Total valuation across all accounts</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Portfolio">
+        <xs:annotation>
+            <xs:documentation>A group of accounts in Figaro</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="c:ValuationFormat"/>
+                <xs:element ref="c:InvestmentObjective"/>
+                <xs:element name="Description" type="xs:string"/>
+                <xs:element ref="Accounts"/>
+            </xs:sequence>
+            <xs:attribute ref="c:valCcy"/>
+            <xs:attribute ref="c:serviceLevel"/>
+            <xs:attribute name="type" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The type of portfolio</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="code" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Unique identifier of the portfolio (either sequence or code)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="Portfolios">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Portfolio" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="DefaultBankAccount">
+        <xs:annotation>
+            <xs:documentation>A default bank account</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="BankAccount"/>
+            </xs:sequence>
+            <xs:attribute name="defaultType" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>The type of action this account is a default for (e.g. CRD credit/DEB debit)</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="DefaultBankAccounts">
+        <xs:sequence>
+            <xs:element ref="DefaultBankAccount" maxOccurs="unbounded" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="AccountRelationship">
+        <xs:sequence>
+            <xs:element ref="Account"/>
+        </xs:sequence>
+        <xs:attribute ref="c:roleId" use="optional">
+            <xs:annotation>
+                <xs:documentation>The role of the individual in the
+                    relationship</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="AccountRelationships">
+        <xs:sequence>
+            <xs:element name="AccountRelationship" type="AccountRelationship" maxOccurs="unbounded"
+                minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:element name="BankAccount">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Balances"/>
+            </xs:sequence>
+            <xs:attribute name="country" type="c:iso3country" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Country of registration</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="iban" type="c:iban" use="optional"/>
+            <xs:attribute name="sort" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Sort code</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="ukAccount" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>UK account number</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+            <xs:attribute name="roll" type="xs:string" use="optional">
+                <xs:annotation>
+                    <xs:documentation>Roll number</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="AvailableToInvest" type="c:CashValue">
+        <xs:annotation>
+            <xs:documentation>The balance available to invest</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="HoldingValuation" type="c:CashValue">
+        <xs:annotation>
+            <xs:documentation>The current value</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+    <xs:element name="AvailableToWithdraw" type="c:CashValue">
+        <xs:annotation>
+            <xs:documentation>The cleared balance available to withdraw</xs:documentation>
+        </xs:annotation>
+    </xs:element>
+
+    <xs:element name="Balances">
+        <xs:annotation>
+            <xs:documentation>Available balances for this client or account</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="AvailableToWithdraw"/>
+                <xs:element ref="AvailableToInvest"/>
+                <xs:element ref="HoldingValuation"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="AccountLinkEvent">
+        <xs:annotation>
+            <xs:documentation>An event record holding details of an action to link an account with an individual</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:attribute name="id" type="xs:string"></xs:attribute>
+            <xs:attribute name="oldUecode" type="xs:string"></xs:attribute>
+            <xs:attribute name="newUecode" type="xs:string"></xs:attribute>
+            <xs:attribute name="accountNumber" type="xs:string"></xs:attribute>
+            <xs:attribute name="username" type="xs:string"></xs:attribute>
+            <xs:attribute name="changeType" type="xs:string"></xs:attribute>
+            <xs:attribute name="performed" type="xs:dateTime"></xs:attribute>
+            <xs:attribute name="ownershipConfirmed" type="xs:boolean"></xs:attribute>
+            <xs:attribute name="authorisationChecked" type="xs:boolean"></xs:attribute>
+            <xs:attribute name="warningsOverridden" type="xs:string"></xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    
+    <xs:element name="AccountLinkEvents">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="AccountLinkEvent" minOccurs="1" maxOccurs="unbounded"></xs:element>                
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

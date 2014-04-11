@@ -1,0 +1,25 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/custom" elementFormDefault="qualified"
+    attributeFormDefault="unqualified">
+
+    <!-- A namespace for custom basic types (that correspond to xs:* types)
+        Do NOT import any other schemas here -->
+    
+    <xs:complexType name="Decimal">
+        <xs:annotation>
+            <xs:documentation>A decimal value, represented by a 128bit significand and a scale</xs:documentation>
+        </xs:annotation>
+        <xs:attribute name="msb" type="xs:long" use="optional">
+            <xs:annotation>
+                <xs:documentation>The 64 most significant bits of the significand</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="lsb" type="xs:long" use="optional">
+            <xs:annotation>
+                <xs:documentation>The 64 least significant bits of the significand</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="scale" type="xs:int" use="required"/>
+    </xs:complexType>
+    
+</xs:schema>

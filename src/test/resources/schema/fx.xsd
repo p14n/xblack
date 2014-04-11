@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://schemas.jhc.co.uk/domain/fx" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://schemas.jhc.co.uk/domain/fx" elementFormDefault="qualified"
+    attributeFormDefault="unqualified" xmlns:c="http://schemas.jhc.co.uk/domain/common">
+
+    <xs:import namespace="http://schemas.jhc.co.uk/domain/common" schemaLocation="common.xsd"/>
+    <xs:element name="FxRate">
+        <xs:complexType>
+            <xs:attribute name="from" type="c:isoCcy"/>
+            <xs:attribute name="to" type="c:isoCcy"/>
+            <xs:attribute name="rate">
+                <xs:simpleType>
+                    <xs:restriction base="xs:decimal">
+                        <xs:fractionDigits value="6"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="FxTable">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" ref="FxRate"/>
+            </xs:sequence>
+            <xs:attribute name="mode" type="xs:string">
+                <xs:annotation>
+                    <xs:documentation>Possible values *HOUSE, *BUYHSE, *SELLHSE, *EXTEL</xs:documentation>
+                </xs:annotation>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
