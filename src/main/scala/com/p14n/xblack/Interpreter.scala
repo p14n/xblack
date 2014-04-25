@@ -5,39 +5,37 @@ import scala.tools.nsc.doc.model.{DocTemplateEntity,TypeEntity}
 import scala.tools.nsc.doc.base.Tooltip
 
 case class ParamVal(name:String,optional:Boolean = false,typeName:Option[String] = None)
+case class ClassDef(packageName:String,name:String,params:List[ParamVal])
 
 class Interpreter {
 
   def interpret(source: Universe): String = {
     val sb = new StringBuffer()
     println("Interpret Universe");
-    source.rootPackage.templates.foreach { template =>
+    source.rootPackage.templates.map( template =>
       interpret(template.asInstanceOf[DocTemplateEntity])
-    }
+    ).flatten.map( clz => println(clz))
     null
   }
 
-  def interpret(template: DocTemplateEntity): String = {
+  def interpret(template: DocTemplateEntity,packageName:String = ""): List[ClassDef] = {
       println("Template " + template.name)
+    println(template.comment)
       if(template.isClass){
-        return interpretClass(template)
+        return List(interpretClass(packageName,template))
       } else if(template.isPackage){
         return interpretPackage(template)
       }
       println(" - unknown")
-      null
+      List()
   }
-  def interpretClass(cls: DocTemplateEntity): String = {
+  def interpretClass(packageName:String,cls: DocTemplateEntity): ClassDef = {
     println("Class " + cls.name)
-    /*cls.templates.foreach { template =>
-      interpret(template.asInstanceOf[DocTemplateEntity])      
-    }*/
-    cls.valueParams.foreach { params =>
-      params.foreach { param =>
-        println(interpretParamType(ParamVal(name=param.name),param.resultType))
-      }
-    }
-    null
+    cls.values.map( v => println(v.comment) ) //values gives the commented 
+    ClassDef(packageName = packageName, name = cls.name,
+    cls.valueParams.map( params => params.map( 
+      param => interpretParamType(ParamVal(name=param.name),param.resultType))).flatten)
+
   }
 
   def interpretParamType(paramVal:ParamVal,paramType: TypeEntity):ParamVal = {
@@ -49,13 +47,10 @@ class Interpreter {
       } 
     }
   }
-  def interpretPackage(pkg: DocTemplateEntity): String = {
+  def interpretPackage(pkg: DocTemplateEntity): List[ClassDef] = {
     println("Package " + pkg.name)
-    pkg.templates.foreach { template =>
-      interpret(template.asInstanceOf[DocTemplateEntity])
-    }
-    null
+    pkg.templates.map( template =>
+      interpret(template.asInstanceOf[DocTemplateEntity],pkg.name)
+    ).flatten
   }
-
-
 }
