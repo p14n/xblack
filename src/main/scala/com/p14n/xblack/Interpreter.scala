@@ -1,7 +1,7 @@
 package com.p14n.xblack
 
 import scala.tools.nsc.doc.Universe
-import scala.tools.nsc.doc.model.{ DocTemplateEntity, TypeEntity }
+import scala.tools.nsc.doc.model.{ DocTemplateEntity, TypeEntity, Val }
 import scala.tools.nsc.doc.base.Tooltip
 import scala.tools.nsc.doc.base.comment.{ Comment, Paragraph, Chain, Summary, Text }
 
@@ -12,14 +12,12 @@ class Interpreter {
 
   def interpret(source: Universe): List[ClassDef] = {
     val sb = new StringBuffer()
-    println("Interpret Universe");
     source.rootPackage.templates.map(template =>
       interpret(template.asInstanceOf[DocTemplateEntity])).flatten
   }
 
   def interpret(template: DocTemplateEntity, packageName: String = ""): List[ClassDef] = {
     println("Template " + template.name)
-    println(template.comment)
     if (template.isClass) {
       return List(interpretClass(packageName, template))
     } else if (template.isPackage) {
@@ -31,10 +29,15 @@ class Interpreter {
 
   def interpretClass(packageName: String, cls: DocTemplateEntity): ClassDef = {
     println("Class " + cls.name)
-    val caseParamNames = cls.valueParams.foldLeft(Set[String]()) { (s, v) => v.foldLeft(s) { (si, vi) => si + vi.name } }
+    val allParamNameMap = cls.values.foldLeft(Map[String,Val]()){ (m,v) => m + (v.name -> v) }
 
-    val caseParams = cls.values.filter(v => caseParamNames.contains(v.name)).map(
-      param => interpretParamType(ParamVal(name = param.name, comment = interpretComment(param.comment)), param.resultType))
+    val caseParams = cls.valueParams.foldLeft(List[ParamVal]()) { (l, v) =>
+      v.foldLeft(l) { (li, vi) => 
+        val param = allParamNameMap(vi.name)
+        interpretParamType(ParamVal(name = param.name, comment = interpretComment(param.comment)), param.resultType) :: li
+      }
+    }.reverse
+
 
     ClassDef(packageName = packageName, comment = interpretComment(cls.comment), name = cls.name, params = caseParams)
   }
@@ -46,7 +49,7 @@ class Interpreter {
             case c: Chain =>
               c.items.filter { case s: Summary => true case _ => false }.foldLeft("") { (content2, value) =>
                 value.asInstanceOf[Summary].text match {
-                  case t: Text => content2 + t.text
+                  case t: Text => content2 + t.text.trim
                   case _ => content2
                 }
               }
