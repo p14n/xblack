@@ -14,7 +14,12 @@ class DateRangeTest extends FunSuite {
 
     val interpreter = new Interpreter()
 
-    interpreter.interpret(universe.get)
+    val dr1 = interpreter.interpret(universe.get)
+    val dr2 = List(ClassDef(name = "DateRange",comment="A date range xmlschema(root)",packageName= "example",params =
+      List(ParamVal(name="from",optional=false,typeName=Some("javax.xml.datatype.XMLGregorianCalendar"),comment="From date xmlschema(date)"),
+        ParamVal(name="to",optional=true,typeName=Some("javax.xml.datatype.XMLGregorianCalendar"),comment="To date xmlschema(date)"))))
+
+    assert(dr1 == dr2)
 
   }
 
