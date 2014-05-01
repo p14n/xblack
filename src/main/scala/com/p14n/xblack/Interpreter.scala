@@ -2,10 +2,10 @@ package com.p14n.xblack
 
 import scala.tools.nsc.doc.Universe
 import scala.tools.nsc.doc.model.{ DocTemplateEntity, TypeEntity, Val }
-import scala.tools.nsc.doc.base.Tooltip
+import scala.tools.nsc.doc.base.{Tooltip, LinkToTpl}
 import scala.tools.nsc.doc.base.comment.{ Comment, Paragraph, Chain, Summary, Text }
 
-case class ParamVal(name: String, comment: String, optional: Boolean = false, typeName: Option[String] = None)
+case class ParamVal(name: String, comment: String, optional: Boolean = false, typeName: Option[String] = None, many: Boolean = false)
 case class ClassDef(packageName: String, name: String, params: List[ParamVal], comment: String)
 
 class Interpreter {
@@ -62,9 +62,12 @@ class Interpreter {
 
   def interpretParamType(paramVal: ParamVal, paramType: TypeEntity): ParamVal = {
     paramType.refEntity.values.foldLeft(paramVal) { (content, value) =>
+      println("Value " + value)
       value match {
         case (Tooltip("scala.Option"), y) => content.copy(optional = true);
+        case (Tooltip("scala.List"), y) => content.copy(many = true);          
         case (Tooltip(x), y) => content.copy(typeName = Some(x));
+        case (LinkToTpl(x), y) => content.copy(typeName = Some(x.toString()));
         case _ => content;
       }
     }

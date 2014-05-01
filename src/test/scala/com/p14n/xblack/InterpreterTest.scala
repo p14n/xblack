@@ -3,7 +3,7 @@ package com.p14n.xblack
 import org.scalatest.FunSuite
 import scala.tools.nsc.io
 
-class DateRangeTest extends FunSuite {
+class InterpreterTest extends FunSuite {
 
   val parser = new Parser()
   val interpreter = new Interpreter()
@@ -18,6 +18,23 @@ class DateRangeTest extends FunSuite {
       List(ParamVal(name="from",optional=false,typeName=Some("javax.xml.datatype.XMLGregorianCalendar"),comment="From date xmlschema(date)"),
         ParamVal(name="to",optional=true,typeName=Some("javax.xml.datatype.XMLGregorianCalendar"),comment="To date xmlschema(date)")))
 
+    assert(dr1 == dr2)
+
+  }
+  test("Should parse ApiMessage"){
+
+    val source = io.File("src/test/resources/examplescala/internal.scala").slurp()
+    val universe = parser.parse(source)
+
+    val dr1 = interpreter.interpret(universe.get)(1)
+    val dr2 = ClassDef(name = "ApiMessage",comment="A message sent from the api to the back office",packageName= "internal",params =
+      List(ParamVal(name="Body",optional=true,typeName=Some("internal.Container"),comment="The message payload"),
+        ParamVal(name="method",optional=true,typeName=Some("scala.Predef.String"),comment="The method (corresponding to HTTP methods like GET) to use"),
+        ParamVal(name="path",optional=true,typeName=Some("scala.Predef.String"),comment="The path to target - corresponds to actors"),
+        ParamVal(name="requestId",optional=true,typeName=Some("scala.Predef.String"),comment="Identifies the message for the lifetime of this request through the system"),
+        ParamVal(name="person",optional=true,typeName=Some("scala.Predef.String"),comment="The uecode of the person instigating this request"),
+        ParamVal(name="status",optional=true,typeName=Some("scala.Int"),comment="The status (corresponding to HTTP status codes like 404 Not found) to use")
+      ))
 
     assert(dr1 == dr2)
 

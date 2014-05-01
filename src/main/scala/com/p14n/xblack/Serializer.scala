@@ -4,12 +4,23 @@ import scala.xml.Elem
 
 class Serializer {
   val printer = new scala.xml.PrettyPrinter(80,2)
+  val schemaRoot = "http://schemas.jhc.co.uk/domain/"
+  val packageRoot = ""
 
-  def serialize(classes: List[ClassDef]): String = {
-    val classContent = classes.foldLeft(List[Elem]()){ (s,classs) => serialize(classs) :: s }.reverse
-    val packageName = "http://schemas.jhc.co.uk/domain/" + classes(0).packageName
+  val known = Map(
+    "joda.date.DateTime" -> "xs:dateTime",
+    "scala.Int" -> "xs:int",
+    "scala.Byte" -> "xs:base64Binary",
+    "scala.Predef.String" -> "xs:string")
 
-    printer.format(<xs:schema xmlns={packageName}
+
+  def serialise(classes: List[ClassDef]): String = {
+    val allNames = classes.foldLeft(Set[String]()){ (s,v) => s + (v.packageName + "." + v.name) }
+    val classContent = classes.foldLeft(List[Elem]()){ (s,classs) => serialise(classs,allNames) :: s }.reverse
+    val packageName = schemaRoot + classes(0).packageName
+    printer.format(
+
+    <xs:schema xmlns={packageName}
      xmlns:xs="http://www.w3.org/2001/XMLSchema"
      targetNamespace={packageName}
      elementFormDefault="qualified"
@@ -21,22 +32,35 @@ class Serializer {
 
 
   }
-  def serialize(classs: ClassDef): Elem = {
+  def serialise(classs: ClassDef,allNames: Set[String]): Elem = {
     val name = classs.name
     val comment = classs.comment
-    val annotations = classs.params.foldLeft(List[Elem]()){ (s,param) => serialize(param) :: s }.reverse
+    val attributes = classs.params.filter {
+      p => known.contains(p.typeName.getOrElse(""))
+    }.foldLeft(List[Elem]()){ (s,param) => serialiseAttribute(param,allNames) :: s }.reverse
+    val elements = serialiseElements(classs.params.filter {
+      p => !known.contains(p.typeName.getOrElse(""))
+    } , allNames)
 
       <xs:complexType name={name}>
         <xs:annotation>
             <xs:documentation>{comment}</xs:documentation>
         </xs:annotation>
-        {annotations}
-        </xs:complexType>
+        {elements}
+        {attributes}
+      </xs:complexType>
   }
-  def serialize(param: ParamVal): Elem = {
+  def serialiseElements(params: List[ParamVal],allNames: Set[String]): List[Elem] = {
+    if(params.size == 0) List[Elem]() else {
+  	  List(<xs:sequence>
+        {params.foldLeft(List[Elem]()){ (s,param) => serialiseElement(param,allNames) :: s }.reverse}
+   		</xs:sequence>)
+    }
+  }
+  def serialiseAttribute(param: ParamVal,allNames: Set[String]): Elem = {
     val name = param.name
     val meta = getMetadata(param.comment)
-    val typeName = translateType(param.typeName,meta)
+    val typeName = translateType(param.typeName,meta,allNames)
     val optionality = if(param.optional) "optional" else "required"
     val comment = removeMetadata(param.comment)
        <xs:attribute name={name} type={typeName} use={optionality}>
@@ -44,6 +68,18 @@ class Serializer {
             <xs:documentation>{comment}</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+  }
+  def serialiseElement(param: ParamVal,allNames: Set[String]): Elem = {
+    val name = param.name
+    val meta = getMetadata(param.comment)
+    val typeName = translateType(param.typeName,meta,allNames)
+    val optionality = if(param.optional) "optional" else "required"
+    val comment = removeMetadata(param.comment)
+       <xs:element name={name} type={typeName} minoccurs={if(param.optional) "0" else "1"} maxoccurs={if(param.many) "unbounded" else "1"}>
+          <xs:annotation>
+            <xs:documentation>{comment}</xs:documentation>
+          </xs:annotation>
+        </xs:element>
   }
   def removeMetadata(comment:String): String = {
     val index = comment.indexOf("xmlschema(")
@@ -61,10 +97,23 @@ class Serializer {
     }
     Set[String]()
   }
-  def translateType(typeName: Option[String],meta: Set[String]): String = {
+  def translateType(typeName: Option[String],meta: Set[String],allNames: Set[String]): String = {
     if(meta.contains("date")) return "xs:date"
     typeName match {
-      case Some("joda.date.DateTime") => return "xs:dateTime"
+      case Some(v) => if(known.contains(v)) known(v) else {
+        val point = v.lastIndexOf(".")
+        println("translate type "+ v)
+        println("from "+ allNames)
+        if(allNames.contains(v)) {
+          if(point > -1) v.substring(point + 1) else v
+        } else {
+          if(v.startsWith(packageRoot)){
+            v.substring(packageRoot.length,point).replace(".","-") + ":" + v.substring(point + 1)
+          } else {
+            v.substring(0,point).replace(".","-") + ":" + v.substring(point + 1)
+          }
+        }
+      }
       case _ => ""
     }
   }
