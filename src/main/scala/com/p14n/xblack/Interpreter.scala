@@ -61,6 +61,7 @@ class Interpreter {
   }
 
   def interpretParamType(paramVal: ParamVal, paramType: TypeEntity): ParamVal = {
+    println("Type " + paramType)
     paramType.refEntity.values.foldLeft(paramVal) { (content, value) =>
       println("Value " + value)
       value match {

@@ -75,7 +75,7 @@ class Serializer {
     val typeName = translateType(param.typeName,meta,allNames)
     val optionality = if(param.optional) "optional" else "required"
     val comment = removeMetadata(param.comment)
-       <xs:element name={name} type={typeName} minoccurs={if(param.optional) "0" else "1"} maxoccurs={if(param.many) "unbounded" else "1"}>
+       <xs:element name={name} type={typeName} minOccurs={if(param.optional) "0" else "1"} maxOccurs={if(param.many) "unbounded" else "1"}>
           <xs:annotation>
             <xs:documentation>{comment}</xs:documentation>
           </xs:annotation>

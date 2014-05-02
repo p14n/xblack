@@ -33,7 +33,10 @@ class SerializerTest extends FunSuite {
         ParamVal(name="path",comment="The path to target - corresponds to actors",optional=true,typeName=Some("scala.Predef.String")),
         ParamVal(name="requestId",comment="Identifies the message for the lifetime of this request through the system",optional=true,typeName=Some("scala.Predef.String")),
         ParamVal(name="person",comment="The uecode of the person instigating this request",optional=true,typeName=Some("scala.Predef.String")),
-        ParamVal(name="status",comment="The status (corresponding to HTTP status codes like 404 Not found) to use",optional=true,typeName=Some("scala.Int"))),comment="A message sent from the api to the back office"))
+        ParamVal(name="status",comment="The status (corresponding to HTTP status codes like 404 Not found) to use",optional=true,typeName=Some("scala.Int")),
+        ParamVal(name="tags",comment="",optional=false,typeName=Some("scala.Predef.String"),many=true),
+        ParamVal(name="errors",comment="",optional=true,typeName=Some("internal.Errors"),many=false)),
+        comment="A message sent from the api to the back office"))
 
     val s = new Serializer()
     val source = io.File("src/test/resources/exampleschema/internal.xsd").slurp()

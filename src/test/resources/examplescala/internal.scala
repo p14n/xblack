@@ -9,6 +9,9 @@ package internal
 case class Container(objectType: String,
   containedObject: Array[Byte])
 
+case class Error(desc:String)
+case class Errors(error: Error*)
+
 /**
  * A message sent from the api to the back office
  * 
@@ -26,6 +29,5 @@ case class ApiMessage(
   requestId: Option[String] = None,
   person: Option[String] = None,
   status: Option[Int] = None,
-  tags: List[String] = List()
-)
-
+  tags: List[String] = List(),
+  errors:Option[Errors] = None)
