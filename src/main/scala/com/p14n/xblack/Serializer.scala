@@ -1,6 +1,6 @@
 package com.p14n.xblack
 
-import scala.xml.Elem
+import scala.xml.{Elem,PrefixedAttribute,Null}
 
 class Serializer {
   val printer = new scala.xml.PrettyPrinter(80, 2)
@@ -15,22 +15,24 @@ class Serializer {
     "scala.Predef.String" -> "xs:string")
 
   def serialise(classes: List[ClassDef]): String = {
+
     val allNames = classes.foldLeft(Set[String]()) { (s, v) => s + (v.packageName + "." + v.name) }
     val classContent = classes.foldLeft(List[Elem]()) { (s, classs) => serialise(classs, allNames) :: s }.reverse
     val schemaName = schemaRoot + classes(0).packageName
-
-    val imports = findImports(classes,classes(0).packageName)
-
-
-    printer.format(
-
+    val otherNamespaces = findNamespaces(classes,classes(0).packageName)
+    val imports = otherNamespaces.map { ns => <xs:import namespace={schemaRoot + ns} schemaLocation={ns +".xsd"}/> }
+    val nsAtts = otherNamespaces.map { ns => new PrefixedAttribute("xmlns",ns,schemaRoot + ns,Null) }
+    
+    val xsd = nsAtts.foldLeft(
       <xs:schema xmlns={ schemaName } xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace={ schemaName } elementFormDefault="qualified" attributeFormDefault="unqualified">
         { imports }
         { classContent }
-      </xs:schema>)
+      </xs:schema>) { (schema,att) => schema % att}
+
+    printer.format(xsd)
 
   }
-  def findImports(classes: List[ClassDef],packageName:String):Set[Elem] = {
+  def findNamespaces(classes: List[ClassDef],packageName:String):Set[String] = {
     classes.foldLeft(Set[String]()) { (s,v) =>
       v.params.foldLeft(s) { (si, vi) =>
         if(vi.typeName.isDefined){
@@ -44,8 +46,9 @@ class Serializer {
           } else { si }
         } else { si }
       }
-    }.map { ns =>  <xs:import namespace={schemaRoot + ns} schemaLocation={ns +".xsd"}/> }
+    }
   }
+
   def serialise(classs: ClassDef, allNames: Set[String]): Elem = {
     val name = classs.name
     val comment = classs.comment

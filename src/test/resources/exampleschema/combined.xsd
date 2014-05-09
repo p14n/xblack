@@ -1,5 +1,5 @@
 <xs:schema 
-targetNamespace="http://schemas.jhc.co.uk/domain/combined" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.jhc.co.uk/domain/combined">
+xmlns:example="http://schemas.jhc.co.uk/domain/example" xmlns:internal="http://schemas.jhc.co.uk/domain/internal" targetNamespace="http://schemas.jhc.co.uk/domain/combined" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.jhc.co.uk/domain/combined">
   <xs:import 
   namespace="http://schemas.jhc.co.uk/domain/internal" schemaLocation="internal.xsd">
 </xs:import>
