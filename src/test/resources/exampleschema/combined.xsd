@@ -1,0 +1,26 @@
+<xs:schema 
+targetNamespace="http://schemas.jhc.co.uk/domain/combined" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.jhc.co.uk/domain/combined">
+  <xs:import 
+  namespace="http://schemas.jhc.co.uk/domain/internal" schemaLocation="internal.xsd">
+</xs:import>
+  <xs:import 
+  namespace="http://schemas.jhc.co.uk/domain/example" schemaLocation="example.xsd">
+</xs:import>
+  <xs:complexType name="DateMessage">
+    <xs:annotation>
+      <xs:documentation></xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="msg" type="internal:ApiMessage" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="dates" type="example:DateRange" minOccurs="1" maxOccurs="1">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

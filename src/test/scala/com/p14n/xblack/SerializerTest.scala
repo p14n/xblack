@@ -16,6 +16,17 @@ class SerializerTest extends FunSuite {
 
     assert(serialized === source)
   }
+  test("Should parse Combined"){
+    val dr = List(ClassDef(name = "DateMessage",comment="",packageName= "combined",params =
+      List(ParamVal(name="msg",optional=false,typeName=Some("internal.ApiMessage"),comment=""),
+        ParamVal(name="dates",optional=false,typeName=Some("example.DateRange"),comment=""))))
+
+    val s = new Serializer()
+    val source = io.File("src/test/resources/exampleschema/combined.xsd").slurp()
+    val serialized = s.serialise(dr)
+
+    assert(serialized === source)
+  }
   test("Should parse Internal package"){
 
     val dr = List(
