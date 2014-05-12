@@ -32,11 +32,6 @@ targetNamespace="http://schemas.jhc.co.uk/domain/internal" elementFormDefault="q
           <xs:documentation></xs:documentation>
         </xs:annotation>
       </xs:element>
-      <xs:element name="errors" type="internal:Errors" minOccurs="0" maxOccurs="1">
-        <xs:annotation>
-          <xs:documentation></xs:documentation>
-        </xs:annotation>
-      </xs:element>
     </xs:sequence>
     <xs:attribute name="method" type="xs:string" use="optional">
       <xs:annotation>

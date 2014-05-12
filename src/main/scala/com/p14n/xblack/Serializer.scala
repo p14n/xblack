@@ -22,7 +22,7 @@ class Serializer {
     val otherNamespaces = findNamespaces(classes,classes(0).packageName)
     val imports = otherNamespaces.map { ns => <xs:import namespace={schemaRoot + ns} schemaLocation={ns +".xsd"}/> }
     val nsAtts = otherNamespaces.map { ns => new PrefixedAttribute("xmlns",ns,schemaRoot + ns,Null) }
-    
+
     val xsd = nsAtts.foldLeft(
       <xs:schema xmlns={ schemaName } xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace={ schemaName } elementFormDefault="qualified" attributeFormDefault="unqualified">
         { imports }
@@ -128,6 +128,8 @@ class Serializer {
     typeName match {
       case Some(v) => if (known.contains(v)) known(v) else {
 
+        println("Check for "+v)
+        println("In "+allNames)
         if (allNames.contains(v)) {
           val point = v.lastIndexOf(".")
           if (point > -1) v.substring(point + 1) else v

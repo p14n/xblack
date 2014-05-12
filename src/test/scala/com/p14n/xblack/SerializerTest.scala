@@ -11,7 +11,7 @@ class SerializerTest extends FunSuite {
         ParamVal(name="to",optional=true,typeName=Some("joda.date.DateTime"),comment="To date"))))
 
     val s = new Serializer()
-    val source = io.File("src/test/resources/exampleschema/daterange.xsd").slurp()
+    val source = io.File("src/test/resources/exampleschema/example.xsd").slurp()
     val serialized = s.serialise(dr)
 
     assert(serialized === source)
@@ -45,8 +45,7 @@ class SerializerTest extends FunSuite {
         ParamVal(name="requestId",comment="Identifies the message for the lifetime of this request through the system",optional=true,typeName=Some("scala.Predef.String")),
         ParamVal(name="person",comment="The uecode of the person instigating this request",optional=true,typeName=Some("scala.Predef.String")),
         ParamVal(name="status",comment="The status (corresponding to HTTP status codes like 404 Not found) to use",optional=true,typeName=Some("scala.Int")),
-        ParamVal(name="tags",comment="",optional=false,typeName=Some("scala.Predef.String"),many=true),
-        ParamVal(name="errors",comment="",optional=true,typeName=Some("internal.Errors"),many=false)),
+        ParamVal(name="tags",comment="",optional=false,typeName=Some("scala.Predef.String"),many=true)),
         comment="A message sent from the api to the back office"))
 
     val s = new Serializer()
