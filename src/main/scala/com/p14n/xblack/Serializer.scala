@@ -2,10 +2,8 @@ package com.p14n.xblack
 
 import scala.xml.{Elem,PrefixedAttribute,Null}
 
-class Serializer {
+class Serializer (schemaRoot:String = "http://schemas.jhc.co.uk/domain/",packageRoot:String = ""){
   val printer = new scala.xml.PrettyPrinter(80, 2)
-  val schemaRoot = "http://schemas.jhc.co.uk/domain/"
-  val packageRoot = ""
 
   val known = Map(
     "joda.date.DateTime" -> "xs:dateTime",
@@ -32,6 +30,7 @@ class Serializer {
     printer.format(xsd)
 
   }
+
   def findNamespaces(classes: List[ClassDef],packageName:String):Set[String] = {
     classes.foldLeft(Set[String]()) { (s,v) =>
       v.params.foldLeft(s) { (si, vi) =>
@@ -67,6 +66,7 @@ class Serializer {
       { attributes }
     </xs:complexType>
   }
+
   def serialiseElements(params: List[ParamVal], allNames: Set[String]): List[Elem] = {
     if (params.size == 0) List[Elem]() else {
       List(<xs:sequence>
@@ -74,6 +74,7 @@ class Serializer {
            </xs:sequence>)
     }
   }
+
   def serialiseAttribute(param: ParamVal, allNames: Set[String]): Elem = {
     val name = param.name
     val meta = getMetadata(param.comment)
@@ -86,6 +87,7 @@ class Serializer {
       </xs:annotation>
     </xs:attribute>
   }
+
   def serialiseElement(param: ParamVal, allNames: Set[String]): Elem = {
     val name = param.name
     val meta = getMetadata(param.comment)
@@ -98,10 +100,12 @@ class Serializer {
       </xs:annotation>
     </xs:element>
   }
+
   def removeMetadata(comment: String): String = {
     val index = comment.indexOf("xmlschema(")
     if (index > -1) comment.substring(0, index - 1) else comment
   }
+
   def getMetadata(comment: String): Set[String] = {
     val index = comment.indexOf("xmlschema(")
 
@@ -114,6 +118,7 @@ class Serializer {
     }
     Set[String]()
   }
+
   def convertExternalName(name: String): String = {
     val point = name.lastIndexOf(".")
     if (name.startsWith(packageRoot)) {
@@ -121,8 +126,8 @@ class Serializer {
     } else {
       name.substring(0, point).replace(".", "-") + ":" + name.substring(point + 1)
     }
-
   }
+
   def translateType(typeName: Option[String], meta: Set[String], allNames: Set[String]): String = {
     if (meta.contains("date")) return "xs:date"
     typeName match {

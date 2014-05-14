@@ -41,6 +41,7 @@ class Interpreter {
 
     ClassDef(packageName = packageName, comment = interpretComment(cls.comment), name = cls.name, params = caseParams)
   }
+
   def interpretComment(maybe: Option[Comment]): String = {
     {
       for (comment <- maybe) yield {
@@ -73,6 +74,7 @@ class Interpreter {
       }
     }
   }
+
   def interpretPackage(pkg: DocTemplateEntity): List[ClassDef] = {
     println("Package " + pkg.name)
     pkg.templates.map(template =>

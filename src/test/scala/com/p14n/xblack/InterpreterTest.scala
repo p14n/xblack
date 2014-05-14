@@ -5,13 +5,12 @@ import scala.tools.nsc.io
 
 class InterpreterTest extends FunSuite {
 
-  val parser = new Parser()
   val interpreter = new Interpreter()
 
   test("Should parse DateRange"){
 
     val source = io.File("src/test/resources/examplescala/DateRange.scala").slurp()
-    val universe = parser.parse(source)
+    val universe = Parser.parse(source)
 
     val dr1 = interpreter.interpret(universe.get)(0)
     val dr2 = ClassDef(name = "DateRange",comment="A date range xmlschema(root)",packageName= "example",params =
@@ -24,7 +23,7 @@ class InterpreterTest extends FunSuite {
   test("Should parse ApiMessage"){
 
     val source = io.File("src/test/resources/examplescala/internal.scala").slurp()
-    val universe = parser.parse(source)
+    val universe = Parser.parse(source)
 
     val dr1 = interpreter.interpret(universe.get)(0)
     val dr2 = ClassDef(name = "ApiMessage",comment="A message sent from the api to the back office",packageName= "internal",params =
