@@ -7,7 +7,24 @@ import scala.tools.nsc.util.CommandLineParser
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.io
 
-object Parser {
+import sbt._
+
+object Parser extends Plugin {
+
+  val xsd = taskKey[Unit]("Generate xml schema for case classes.")
+  val packageRoot = settingKey[String]("The part of the package that should be removed from namespaces.")
+  val schemaRoot = settingKey[String]("The start of the namespace http://...")
+  val directories = settingKey[List[String]]("Directories to examine for case classes")
+
+  val newSettings = Seq(
+    packageRoot := "",
+    schemaRoot := "http://",
+    directories := List()
+  )
+
+  xsd := {
+    genSchemas(directories.value,schemaRoot.value,packageRoot.value)
+  }
 
   def factory = newDocFactory
   def interpreter = new Interpreter()
@@ -22,17 +39,18 @@ object Parser {
   }
 
   def parse(content: String): Option[Universe] = {
-  	factory.makeUniverse(Right(content))
+    factory.makeUniverse(Right(content))
   }
 
-  def main(args: Array[String]):Unit = {
-    val p:List[ClassDef] = args.toList.map { arg =>
-      
+  def genSchemas(dirs:List[String],schemaRoot:String,packageRoot:String): Unit = {
+
+    val p: List[ClassDef] = dirs.map { arg =>
+
       val dir = new java.io.File(arg)
-      if(dir.exists && dir.isDirectory){
-        
+      if (dir.exists && dir.isDirectory) {
+
         dir.listFiles.map { file =>
-          if(!file.isDirectory){
+          if (!file.isDirectory) {
             val universe = parse(io.File(file.getAbsolutePath).slurp()).get
             interpreter.interpret(universe)
             //List[ClassDef]()
@@ -47,14 +65,15 @@ object Parser {
 
     val mapCD = p groupBy { _.packageName }
 
-    val s = new Serializer()
+    val s = new Serializer(schemaRoot,packageRoot)
 
-    mapCD. map { case (k,v) =>
-      println("************************")
-      println(k)
-      println(s.serialise(v))
+    mapCD.map {
+      case (k, v) =>
+        println("************************")
+        println(k)
+        println(s.serialise(v))
     }
-  
+
   }
 
 }

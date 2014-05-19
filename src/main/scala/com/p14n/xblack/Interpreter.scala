@@ -18,7 +18,7 @@ class Interpreter {
 
   def interpret(template: DocTemplateEntity, packageName: String = ""): List[ClassDef] = {
     println("Template " + template.name)
-    if (template.isClass) {
+    if (template.isCaseClass) {
       return List(interpretClass(packageName, template))
     } else if (template.isPackage) {
       return interpretPackage(template)

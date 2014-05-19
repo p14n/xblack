@@ -1,5 +1,7 @@
 package example;
 
+import org.joda.time.LocalDate
+
 /** 
   * A date range xmlschema(root)
   *
@@ -8,5 +10,5 @@ package example;
   * 
 */
 case class DateRange(
- from: javax.xml.datatype.XMLGregorianCalendar,
+ from: LocalDate,
  to: Option[javax.xml.datatype.XMLGregorianCalendar] = None)

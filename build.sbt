@@ -1,3 +1,5 @@
+sbtPlugin := true
+
 name := "xblack"
 
 version := "1.0"
