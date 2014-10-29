@@ -6,6 +6,7 @@ import scala.tools.nsc.doc.{ DocFactory, Universe }
 import scala.tools.nsc.util.CommandLineParser
 import scala.tools.nsc.reporters.ConsoleReporter
 import scala.tools.nsc.io
+import scala.language.postfixOps
 
 import sbt._
 
